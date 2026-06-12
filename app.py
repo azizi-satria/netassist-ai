@@ -29,6 +29,14 @@ ANALYSIS_PROMPT = """Analisis konfigurasi jaringan berikut dan berikan:
 
 UPLOAD_DIR = Path("uploads")
 SUPPORTED_UPLOAD_TYPES = ("rsc", "txt")
+PROXY_ENV_VARS = (
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "ALL_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "all_proxy",
+)
 
 
 def configure_page() -> None:
@@ -48,25 +56,27 @@ def inject_custom_css() -> None:
         <style>
         :root {
             --surface: #ffffff;
-            --surface-soft: #f6f8fb;
-            --line: #dbe2ea;
-            --ink: #17202a;
-            --muted: #657386;
-            --accent: #0f766e;
-            --accent-strong: #155e75;
+            --surface-soft: #f3faf9;
+            --line: #d7e7e5;
+            --ink: #10202d;
+            --muted: #5f7280;
+            --accent: #0f8b8d;
+            --accent-strong: #0b6570;
             --ok: #16a34a;
+            --friendly-blue: #e9f5ff;
+            --friendly-teal: #ecfbf8;
         }
 
         .stApp {
             background:
-                radial-gradient(circle at top left, rgba(15, 118, 110, 0.10), transparent 32rem),
-                linear-gradient(180deg, #f8fbfd 0%, #eef3f7 100%);
+                radial-gradient(circle at top left, rgba(20, 184, 166, 0.14), transparent 30rem),
+                linear-gradient(180deg, #fbfefd 0%, #eef8f6 58%, #f7fbff 100%);
             color: var(--ink);
         }
 
         [data-testid="stSidebar"] {
-            background: #0d1720;
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            background: #12323a;
+            border-right: 1px solid rgba(255, 255, 255, 0.10);
         }
 
         [data-testid="stSidebar"] * {
@@ -77,7 +87,7 @@ def inject_custom_css() -> None:
             width: 100%;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.16);
-            background: #ef4444;
+            background: #f97373;
             color: #ffffff;
             font-weight: 700;
         }
@@ -113,9 +123,9 @@ def inject_custom_css() -> None:
             min-height: 112px;
             border: 1px solid var(--line);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.86);
+            background: rgba(255, 255, 255, 0.94);
             padding: 1rem;
-            box-shadow: 0 10px 25px rgba(30, 41, 59, 0.06);
+            box-shadow: 0 12px 28px rgba(15, 101, 112, 0.08);
         }
 
         .kpi-label {
@@ -156,7 +166,7 @@ def inject_custom_css() -> None:
             width: 2.5rem;
             height: 2.5rem;
             border-radius: 8px;
-            background: linear-gradient(135deg, #14b8a6, #38bdf8);
+            background: linear-gradient(135deg, #7dd3fc, #5eead4);
             color: #03131a;
             font-size: 1.35rem;
             font-weight: 900;
@@ -183,6 +193,88 @@ def inject_custom_css() -> None:
             margin-bottom: 1rem;
         }
 
+        [data-testid="stChatMessage"] {
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(15, 101, 112, 0.06);
+            margin-bottom: 0.8rem;
+        }
+
+        [data-testid="stChatMessage"] p,
+        [data-testid="stChatMessage"] li,
+        [data-testid="stChatMessage"] span,
+        [data-testid="stChatMessage"] div,
+        [data-testid="stChatMessage"] code,
+        [data-testid="stChatMessage"] pre {
+            color: var(--ink);
+        }
+
+        [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarUser"]) {
+            background: var(--friendly-blue);
+            border-color: #c7e4f8;
+        }
+
+        [data-testid="stChatMessage"]:has([data-testid="stChatMessageAvatarAssistant"]) {
+            background: var(--friendly-teal);
+            border-color: #c6eee7;
+        }
+
+        [data-testid="stChatMessageAvatarUser"],
+        [data-testid="stChatMessageAvatarAssistant"] {
+            color: #10202d;
+        }
+
+        [data-testid="stChatInput"] {
+            background: rgba(247, 251, 255, 0.96);
+            border-top: 1px solid var(--line);
+            padding-top: 0.5rem;
+        }
+
+        [data-testid="stBottomBlockContainer"] {
+            background: rgba(247, 251, 255, 0.96);
+        }
+
+        [data-testid="stChatInput"] > div,
+        [data-testid="stChatInput"] div[data-baseweb="textarea"] {
+            background: #ffffff;
+            border: 1px solid #b9d8d5;
+            border-radius: 8px;
+        }
+
+        .stChatInput textarea,
+        [data-testid="stChatInput"] textarea,
+        [data-baseweb="textarea"] textarea {
+            color: #10202d;
+            caret-color: #0f8b8d;
+            background: #ffffff;
+            -webkit-text-fill-color: #10202d;
+        }
+
+        .stChatInput textarea::placeholder,
+        [data-testid="stChatInput"] textarea::placeholder,
+        [data-baseweb="textarea"] textarea::placeholder {
+            color: #6b7f8d;
+            opacity: 1;
+            -webkit-text-fill-color: #6b7f8d;
+        }
+
+        [data-testid="stChatInputSubmitButton"] {
+            background: #0f8b8d;
+            color: #ffffff;
+            border-radius: 8px;
+        }
+
+        [data-testid="stChatInputSubmitButton"] svg {
+            color: #ffffff;
+            fill: #ffffff;
+        }
+
+        .stAlert,
+        .stAlert * {
+            color: #17202a;
+        }
+
         @media (max-width: 780px) {
             .kpi-grid {
                 grid-template-columns: 1fr;
@@ -203,9 +295,18 @@ def get_api_key() -> str | None:
     return os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
 
+def disable_broken_local_proxy() -> None:
+    """Ignore local dead proxy settings that can block Gemini requests."""
+    for key in PROXY_ENV_VARS:
+        value = os.getenv(key, "")
+        if "127.0.0.1:9" in value or "localhost:9" in value:
+            os.environ.pop(key, None)
+
+
 @st.cache_resource(show_spinner=False)
 def get_client(api_key: str):
     """Create a cached Gemini client."""
+    disable_broken_local_proxy()
     return genai.Client(api_key=api_key)
 
 
