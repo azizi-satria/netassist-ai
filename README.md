@@ -95,7 +95,7 @@ netassist-ai/
 ## Screenshot
 
 ![NetAssist AI](assets/dashboard.png)
-![NetAssist AI](assets/fitur upload.png)
+![NetAssist AI](assets/upload.png)
 
 
 ## Catatan Keamanan
