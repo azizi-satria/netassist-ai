@@ -92,6 +92,10 @@ netassist-ai/
 ├── assets/
 └── uploads/
 ```
+## Screenshot
+
+![NetAssist AI](assets/dashboard.png)
+
 
 ## Catatan Keamanan
 
